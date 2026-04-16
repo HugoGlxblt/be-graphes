@@ -30,7 +30,7 @@ public class Path {
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
-        if (nodes.size() == 0)
+        if (nodes.isEmpty())
             return new Path(graph);
         if (nodes.size() == 1)
             return new Path(graph, nodes.get(0));
@@ -42,20 +42,21 @@ public class Path {
 
             minTravelTime = Double.MAX_VALUE;
             erreur = true;
-
             Node prochain = itNode.next();
-
+            
             for (Arc s : courant.getSuccessors()) {
                 if (prochain.equals(s.getDestination())) {
                     erreur = false;
                     double minimumTTime = s.getMinimumTravelTime();
                     if (minTravelTime > minimumTTime) {
-                        minTravelTime = minimumTTime;
+                        
                         if (minTravelTime == Double.MAX_VALUE) {
                             arcs.add(s);
+                            minTravelTime = minimumTTime;
                         }
                         else {
                             if (!arcs.isEmpty()) {
+                                minTravelTime = minimumTTime;
                                 arcs.remove(arcs.size() - 1);
                                 arcs.add(s);
                             }
@@ -63,6 +64,7 @@ public class Path {
 
                     }
                 }
+                courant = prochain;
 
             }
             if (erreur == true) {
@@ -87,6 +89,10 @@ public class Path {
             throws IllegalArgumentException {
 
         List<Arc> arcs = new ArrayList<Arc>();
+        if (nodes.isEmpty())
+            return new Path(graph);
+        if (nodes.size() == 1)
+            return new Path(graph, nodes.get(0));
         float minDistance;
         boolean erreur;
         Iterator<Node> itNode = nodes.iterator();
@@ -103,17 +109,22 @@ public class Path {
                     erreur = false;
                     float minimumArcDistance = s.getLength();
                     if (minDistance > minimumArcDistance) {
-                        minDistance = minimumArcDistance;
-                        if (minDistance == Double.MAX_VALUE) {
+                        
+                        if (minDistance == Float.MAX_VALUE) {
+                            minDistance = minimumArcDistance;
                             arcs.add(s);
                         }
                         else {
-                            arcs.remove(arcs.size() - 1);
-                            arcs.add(s);
+                            if (!arcs.isEmpty()) {
+                                minDistance = minimumArcDistance;
+                                arcs.remove(arcs.size() - 1);
+                                arcs.add(s);
+                            }
                         }
 
                     }
                 }
+                courant = prochain;
 
             }
             if (erreur == true) {
