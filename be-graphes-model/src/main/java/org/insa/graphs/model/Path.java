@@ -43,13 +43,13 @@ public class Path {
             minTravelTime = Double.MAX_VALUE;
             erreur = true;
             Node prochain = itNode.next();
-            
+
             for (Arc s : courant.getSuccessors()) {
                 if (prochain.equals(s.getDestination())) {
                     erreur = false;
                     double minimumTTime = s.getMinimumTravelTime();
                     if (minTravelTime > minimumTTime) {
-                        
+
                         if (minTravelTime == Double.MAX_VALUE) {
                             arcs.add(s);
                             minTravelTime = minimumTTime;
@@ -109,7 +109,7 @@ public class Path {
                     erreur = false;
                     float minimumArcDistance = s.getLength();
                     if (minDistance > minimumArcDistance) {
-                        
+
                         if (minDistance == Float.MAX_VALUE) {
                             minDistance = minimumArcDistance;
                             arcs.add(s);

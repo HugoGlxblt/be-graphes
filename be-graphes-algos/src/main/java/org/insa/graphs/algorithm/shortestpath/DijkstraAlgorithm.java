@@ -1,19 +1,28 @@
 package org.insa.graphs.algorithm.shortestpath;
 import java.util.ArrayList;
+import java.util.Collections;
+
+import javax.lang.model.type.NullType;
 
 import org.insa.graphs.model.Node;
+import org.insa.graphs.model.Path;
 import org.insa.graphs.model.Arc;
 import org.insa.graphs.model.Graph;
+import org.insa.graphs.algorithm.AbstractSolution.Status;
 import org.insa.graphs.algorithm.shortestpath.Label;
+import org.insa.graphs.algorithm.utils.BinaryHeap;
 
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
     public DijkstraAlgorithm(ShortestPathData data) {
         super(data);
     }
-
+    public ArrayList<Label> ajouterLabel(ArrayList<Label> labels, Node successeur, Node destination, Arc pere){
+        labels.add(new Label(successeur , false , Float.MAX_VALUE, pere));
+        return labels;
+    }
     @Override
-    protected ShortestPathSolution doRun() {
+    public ShortestPathSolution doRun() {
 
         // retrieve data from the input problem (getInputData() is inherited from the
         // parent class ShortestPathAlgorithm)
@@ -22,37 +31,71 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         // variable that will contain the solution of the shortest path problem
         ShortestPathSolution solution = null;
 
-        // TODO: implement the Dijkstra algorithm
+        // implement the Dijkstra algorithm
         Graph graph = data.getGraph();
         Node origin = data.getOrigin();
-
+        Node destination = data.getDestination();
+        //Initialisation
         ArrayList<Label> labels = new ArrayList<>();
-        for (Node elem : graph.getNodes()) {
+        BinaryHeap<Label> tas = new BinaryHeap<>();
+        Node elem;
+        for (int i = 0; i<graph.getNodes().size(); i++) {
+            elem = graph.get(i);
             if( origin.equals(elem)){
-                labels.add(new Label(elem,false , 0, null));
+                Label lab_origine = new Label(elem,false , 0, null);
+                tas.insert(lab_origine);
+                labels.add(lab_origine);
             }
             else{
-                labels.add(new Label(elem,false , Float.MAX_VALUE, null));
+                labels.add(null);
             }    
         }
-        boolean existe_false = true;
-        while()
 
-        for (Label elem : labels) {
-            float dist_min = Float.MAX_VALUE ;
-            Label sommet_utilise ;
-            if(elem.getCost() < dist_min){
-                dist_min = elem.getCost() ;
-                sommet_utilise = elem ;
-            }
-            
+        //Iterations
+        boolean sommet_atteint = false;
+        while(!tas.isEmpty() && !sommet_atteint) {
+                Label x = tas.deleteMin();
+                x.setMarque(true);
+                for (Arc arc_succeseur : x.getSommetCourant().getSuccessors()) {
+                    if(data.isAllowed(arc_succeseur)){
+                        Node successeur = arc_succeseur.getDestination();
+                        Label it_label = labels.get(successeur.getId());
+                        if(it_label == null){
+                            labels = ajouterLabel(labels, successeur, destination, arc_succeseur);
+                        }
+                            if(it_label.getMarque()==false){
+                                if(it_label.getTotalCost() > x.getTotalCost()+arc_succeseur.getLength()){
+                                    try {
+                                        tas.remove(it_label);
+                                    } catch(Exception e){} 
+                                    it_label.setCost(x.getTotalCost()+arc_succeseur.getLength());
+                                    it_label.setPere(arc_succeseur);
+                                    notifyNodeReached(arc_succeseur.getDestination());
+                                    tas.insert(it_label);
+                                    if(successeur.getId()==destination.getId()){
+                                        sommet_atteint = true;
+                                    }
+                                }
+                            }
+                        }
+                }
         }
 
-
-
-
+        //Solution Construction
+        Arc arc = labels.get(destination.getId()).getPere();
+        ArrayList<Arc> arcs = new ArrayList<>();
+        while (arc != null) {
+                arcs.add(arc);
+                arc = labels.get(arc.getOrigin().getId()).getPere();
+        }
+        // Reverse the path...
+        Collections.reverse(arcs);
+        // Create the final solution.
+        solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, arcs));
         // when the algorithm terminates, return the solution that has been found
+
         return solution;
     }
+
 
 }
