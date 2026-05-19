@@ -12,13 +12,13 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
     public AStarAlgorithm(ShortestPathData data) {
         super(data);
     }
+
     @Override
-    public ArrayList<Label> ajouterLabel(ArrayList<Label> labels, Node successeur, Arc pere, Node destination){
-        labels.add(new LabelStar(successeur , 
-                                false , 
-                                Float.MAX_VALUE, 
-                                (float) Point.distance(successeur.getPoint(), destination.getPoint()),
-                                pere));
-        return labels;
+    public Label createLabel(Node successeur, Arc pere, double cost) {
+        final var destination = getInputData().getDestination();
+        return new LabelStar(successeur,
+                cost,
+                Point.distance(successeur.getPoint(), destination.getPoint()),
+                pere);
     }
 }
