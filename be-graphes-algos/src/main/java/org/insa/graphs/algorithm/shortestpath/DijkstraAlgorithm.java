@@ -48,6 +48,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         while (!tas.isEmpty() && !sommet_atteint) {
             Label x = tas.deleteMin();
             x.setMarque();
+            notifyNodeMarked(x.getSommetCourant());
             if (x.getSommetCourant().getId() == destination.getId()) {
                 sommet_atteint = true;
                 continue;
@@ -59,17 +60,17 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
                 Node successeur = arc_successeur.getDestination();
                 Label it_label = labels.get(successeur.getId());
                 if (it_label == null) {
-                    it_label = createLabel(successeur, arc_successeur, Double.MAX_VALUE);
+                    it_label = createLabel(successeur, arc_successeur, x.getCost() + arc_successeur.getLength());
                     labels.set(successeur.getId(), it_label);
                     tas.insert(it_label);
+                    notifyNodeReached(arc_successeur.getDestination());
                 } 
                 else if (it_label.getMarque()) {
                     continue;
                 } 
-                else if ((it_label.getCost() > x.getCost() + arc_successeur.getLength())) {
+                else if (it_label.getCost() > x.getCost() + arc_successeur.getLength()) {
                     tas.remove(it_label);
                     it_label.setPere(arc_successeur, x.getCost() + arc_successeur.getLength());
-                    notifyNodeReached(arc_successeur.getDestination());
                     tas.insert(it_label);
                 }
             }
