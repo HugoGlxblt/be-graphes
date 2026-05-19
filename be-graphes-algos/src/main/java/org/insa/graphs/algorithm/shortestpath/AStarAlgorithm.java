@@ -13,7 +13,7 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
         super(data);
     }
     @Override
-    public ArrayList<Label> ajouterLabel(ArrayList<Label> labels, Node successeur, Node destination, Arc pere){
+    public ArrayList<Label> ajouterLabel(ArrayList<Label> labels, Node successeur, Arc pere, Node destination){
         labels.add(new LabelStar(successeur , 
                                 false , 
                                 Float.MAX_VALUE, 

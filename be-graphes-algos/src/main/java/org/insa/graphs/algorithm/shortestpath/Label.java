@@ -1,4 +1,5 @@
 package org.insa.graphs.algorithm.shortestpath;
+
 import org.insa.graphs.model.Node;
 import org.insa.graphs.model.Arc;
 
@@ -36,6 +37,9 @@ public class Label implements Comparable<Label>{
 
     public void setPere(Arc p){pere = p;}
 
+    public void setSommet(Node s){sommet_courant = s;}
+
+    @Override
     public int compareTo(Label l){
         if(this.cout_realise > l.getTotalCost()){
             return 1;
