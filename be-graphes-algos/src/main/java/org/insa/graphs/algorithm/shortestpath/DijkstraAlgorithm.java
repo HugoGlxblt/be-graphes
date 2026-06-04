@@ -59,21 +59,27 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
                 }
                 Node successeur = arc_successeur.getDestination();
                 Label it_label = labels.get(successeur.getId());
+
+                double cout_arc = data.getCost(arc_successeur);
+
                 if (it_label == null) {
-                    it_label = createLabel(successeur, arc_successeur, x.getCost() + arc_successeur.getLength());
+                    it_label = createLabel(successeur, arc_successeur, x.getCost() + cout_arc);
                     labels.set(successeur.getId(), it_label);
                     tas.insert(it_label);
                     notifyNodeReached(arc_successeur.getDestination());
-                } 
-                else if (it_label.getMarque()) {
+                } else if (it_label.getMarque()) {
                     continue;
-                } 
-                else if (it_label.getCost() > x.getCost() + arc_successeur.getLength()) {
+                } else if (it_label.getCost() > x.getCost() + cout_arc) {
                     tas.remove(it_label);
-                    it_label.setPere(arc_successeur, x.getCost() + arc_successeur.getLength());
+                    it_label.setPere(arc_successeur, x.getCost() + cout_arc);
                     tas.insert(it_label);
                 }
             }
+        }
+        // cas ou la solution n'est pas faisable
+        Label destLabel = labels.get(destination.getId());
+        if (destLabel == null || !destLabel.getMarque()) {
+            return new ShortestPathSolution(data, Status.INFEASIBLE);
         }
 
         // Solution Construction
@@ -86,7 +92,11 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         // Reverse the path...
         Collections.reverse(arcs);
         // Create the final solution.
-        solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, arcs));
+        if (arcs.isEmpty()) {
+            solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, origin));
+        } else {
+            solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, arcs));
+        }
         // when the algorithm terminates, return the solution that has been found
 
         return solution;

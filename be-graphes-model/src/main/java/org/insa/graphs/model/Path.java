@@ -10,22 +10,26 @@ import java.util.Iterator;
  * Class representing a path between nodes in a graph.
  * </p>
  * <p>
- * A path is represented as a list of {@link Arc} with an origin and not a list of
- * {@link Node} due to the multi-graph nature (multiple arcs between two nodes) of the
+ * A path is represented as a list of {@link Arc} with an origin and not a list
+ * of
+ * {@link Node} due to the multi-graph nature (multiple arcs between two nodes)
+ * of the
  * considered graphs.
  * </p>
  */
 public class Path {
 
     /**
-     * Create a new path that goes through the given list of nodes (in order), choosing
+     * Create a new path that goes through the given list of nodes (in order),
+     * choosing
      * the fastest route if multiple are available.
      *
      * @param graph Graph containing the nodes in the list.
      * @param nodes List of nodes to build the path.
      * @return A path that goes through the given list of nodes.
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
-     *         consecutive nodes in the list are not connected in the graph.
+     *                                  consecutive nodes in the list are not
+     *                                  connected in the graph.
      */
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
@@ -53,8 +57,7 @@ public class Path {
                         if (minTravelTime == Double.MAX_VALUE) {
                             arcs.add(s);
                             minTravelTime = minimumTTime;
-                        }
-                        else {
+                        } else {
                             if (!arcs.isEmpty()) {
                                 minTravelTime = minimumTTime;
                                 arcs.remove(arcs.size() - 1);
@@ -76,14 +79,16 @@ public class Path {
     }
 
     /**
-     * Create a new path that goes through the given list of nodes (in order), choosing
+     * Create a new path that goes through the given list of nodes (in order),
+     * choosing
      * the shortest route if multiple are available.
      *
      * @param graph Graph containing the nodes in the list.
      * @param nodes List of nodes to build the path.
      * @return A path that goes through the given list of nodes.
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
-     *         consecutive nodes in the list are not connected in the graph.
+     *                                  consecutive nodes in the list are not
+     *                                  connected in the graph.
      */
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
@@ -113,8 +118,7 @@ public class Path {
                         if (minDistance == Float.MAX_VALUE) {
                             minDistance = minimumArcDistance;
                             arcs.add(s);
-                        }
-                        else {
+                        } else {
                             if (!arcs.isEmpty()) {
                                 minDistance = minimumArcDistance;
                                 arcs.remove(arcs.size() - 1);
@@ -140,8 +144,10 @@ public class Path {
      *
      * @param paths Array of paths to concatenate.
      * @return Concatenated path.
-     * @throws IllegalArgumentException if the paths cannot be concatenated (IDs of map
-     *         do not match, or the end of a path is not the beginning of the next).
+     * @throws IllegalArgumentException if the paths cannot be concatenated (IDs of
+     *                                  map
+     *                                  do not match, or the end of a path is not
+     *                                  the beginning of the next).
      */
     public static Path concatenate(Path... paths) throws IllegalArgumentException {
         if (paths.length == 0) {
@@ -191,7 +197,7 @@ public class Path {
      * Create a new path containing a single node.
      *
      * @param graph Graph containing the path.
-     * @param node Single node of the path.
+     * @param node  Single node of the path.
      */
     public Path(Graph graph, Node node) {
         this.graph = graph;
@@ -203,7 +209,7 @@ public class Path {
      * Create a new path with the given list of arcs.
      *
      * @param graph Graph containing the path.
-     * @param arcs Arcs to construct the path.
+     * @param arcs  Arcs to construct the path.
      */
     public Path(Graph graph, List<Arc> arcs) {
         this.graph = graph;
@@ -229,6 +235,9 @@ public class Path {
      * @return Last node of the path.
      */
     public Node getDestination() {
+        if (arcs.isEmpty()) {
+            return this.origin;
+        }
         return arcs.get(arcs.size() - 1).getDestination();
     }
 
@@ -262,7 +271,8 @@ public class Path {
      * <ul>
      * <li>it is empty;</li>
      * <li>it contains a single node (without arcs);</li>
-     * <li>the first arc has for origin the origin of the path and, for two consecutive
+     * <li>the first arc has for origin the origin of the path and, for two
+     * consecutive
      * arcs, the destination of the first one is the origin of the second one.</li>
      * </ul>
      *
@@ -316,7 +326,8 @@ public class Path {
     }
 
     /**
-     * Compute the time to travel this path if moving at the maximum allowed speed on
+     * Compute the time to travel this path if moving at the maximum allowed speed
+     * on
      * every arc.
      *
      * @return Minimum travel time to travel this path (in seconds).
