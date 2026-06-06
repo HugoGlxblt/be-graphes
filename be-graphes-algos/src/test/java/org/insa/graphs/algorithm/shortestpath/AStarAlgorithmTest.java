@@ -21,9 +21,9 @@ public class AStarAlgorithmTest extends ShortestPathAlgorithmTest {
             assertTrue("Dijkstra doit trouver une solution", solDijkstra.isFeasible());
             assertTrue("A* doit trouver une solution", solAStar.isFeasible());
 
-            double coutDijkstra = solDijkstra.getPath().getMinimumTravelTime();
+            double coutDijkstra = pathCost(solDijkstra);
                     
-            double coutAStar = solAStar.getPath().getMinimumTravelTime();
+            double coutAStar = pathCost(solAStar);
 
             assertEquals("A* et Dijkstra doivent trouver le même coût sur le graphe",
                     coutDijkstra, coutAStar, 1e-6);

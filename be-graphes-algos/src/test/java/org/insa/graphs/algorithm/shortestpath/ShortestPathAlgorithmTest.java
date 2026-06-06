@@ -58,7 +58,7 @@ public abstract class ShortestPathAlgorithmTest {
         return createAlgorithm(data).doRun();
     }
  
-    private double pathCost(ShortestPathSolution sol) {
+    protected double pathCost(ShortestPathSolution sol) {
         if (sol.getPath() == null) return 0;
         double cost = 0;
         for (Arc arc : sol.getPath().getArcs()) {
